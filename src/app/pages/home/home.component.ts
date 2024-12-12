@@ -12,6 +12,7 @@ export class HomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.loadTasksFromLocalStorage();
   }
 
   addTask(event: any): void {
@@ -22,15 +23,32 @@ export class HomeComponent implements OnInit {
         id: this.tasks.length + 1,
         title: taskText,
         completed: false,
+        edit: false,
         dueDate: new Date()
       };
       this.tasks.push(task);
+      this.saveTasksToLocalStorage();
       input.value = '';
     }
   }
 
   getPendingTasksCount(): number {
     return this.tasks.filter(task => !task.completed).length;
+  }
+
+  clearCompletedTasks(): void {
+    this.tasks = this.tasks.filter(task => !task.completed);
+  }
+
+  private saveTasksToLocalStorage(): void {
+    localStorage.setItem('mydayapp-angular', JSON.stringify(this.tasks));
+  }
+
+  private loadTasksFromLocalStorage(): void {
+    const tasks = localStorage.getItem('mydayapp-angular');
+    if (tasks) {
+      this.tasks = JSON.parse(tasks);
+    }
   }
 
 }

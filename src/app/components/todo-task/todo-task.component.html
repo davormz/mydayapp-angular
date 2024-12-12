@@ -1,6 +1,14 @@
 <div class="view">
-  <input class="toggle" type="checkbox" />
-  <label>{{task.title}}</label>
+  <input class="toggle" type="checkbox"
+  [attr.checked]="task.completed ? true : null"
+  (change)="toggleTaskCompletion()"
+  />
+  <label (dblclick)="enableEditMode()">{{ task.title }}</label>
   <button class="destroy"></button>
 </div>
-<input class="edit" [value]="task.title" />
+<input class="edit"
+autofocus
+ [value]="task.title"
+ (keyup.enter)="updateTaskTitle($event)"
+ (keyup.escape)="disableEditMode()"
+  />
