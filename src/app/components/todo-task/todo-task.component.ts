@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewChecked, Output, EventEmitter } from '@angular/core';
 import { TaskModel } from 'src/app/common/TaskModel';
 
 @Component({
@@ -11,7 +11,10 @@ export class TodoTaskComponent implements AfterViewChecked{
   @Input()
   task!: TaskModel;
 
-  @ViewChild('input') inputElement!: ElementRef;
+  @Output()
+  taskUpdated = new EventEmitter<TaskModel>();
+
+  @ViewChild('inputElement') inputElement!: ElementRef;
 
   ngAfterViewChecked(): void {
     if (this.task.edit && this.inputElement) {
@@ -21,6 +24,7 @@ export class TodoTaskComponent implements AfterViewChecked{
 
   toggleTaskCompletion(): void {
     this.task.completed = !this.task.completed;
+    this.taskUpdated.emit(this.task);
   }
 
   enableEditMode(): void {
@@ -36,11 +40,13 @@ export class TodoTaskComponent implements AfterViewChecked{
     if (taskText) {
       this.task.title = taskText;
       this.disableEditMode();
+      this.taskUpdated.emit(this.task);
     }
   }
 
   disableEditMode(): void {
     this.task.edit = false;
+    this.taskUpdated.emit(this.task);
   }
 
 }
